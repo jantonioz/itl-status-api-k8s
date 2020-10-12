@@ -45,7 +45,7 @@ async function startServer() {
       console.log(new Date().toISOString(), `Running API ON ${API_URL}:${port}`)
     })
   } catch (error) {
-    console.log(getDate(), error)
+    console.log(new Date(), error)
   }
 }
 
