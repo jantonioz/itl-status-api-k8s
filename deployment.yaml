@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  replicas: 2
+  template: 
+    metadata:
+      labels:
+        name: server
+    spec: 
+      containers:
+      - name: server
+        image: grc.io/api-itl-status/server:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4000

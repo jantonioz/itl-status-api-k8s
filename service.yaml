@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+spec:
+  ports:
+  - port: 80
+    targetPort: 4000
+    protocol: TCP
+  selector:
+    name: server
+  type: LoadBalancer
