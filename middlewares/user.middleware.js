@@ -1,5 +1,5 @@
 'use strict'
-const UserValidator = require('../validators/User.validator')
+const UserValidator = require('../validators/user.validator')
 class UserMiddleware {
 	async get(req, res, next) {
 		try {
