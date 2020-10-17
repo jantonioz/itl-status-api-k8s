@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 const cred = require('../config').database
 
 async function connect() {
-	const connection = await mongoose.connect(
-		`mongodb://localhost:27017/${cred.name}`,
-		{ useNewUrlParser: true, useUnifiedTopology: true }
-  )
-  return connection
+	const str = `mongodb://${cred.username}:${cred.password}@${cred.host}:${cred.port}/${cred.name}?authSource=admin`
+	return mongoose.connect(str, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
 }
 
 module.exports = connect
