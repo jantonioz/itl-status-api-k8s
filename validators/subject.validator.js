@@ -1,5 +1,5 @@
 'use strict'
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 
 const joiObject = {clave:Joi.string().required(),
 name:Joi.string().required(),
