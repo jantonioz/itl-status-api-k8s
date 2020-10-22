@@ -3,14 +3,37 @@ const StatusService = require('./status.service')
 const { keyPairGenerator } = require('./cypher')
 const CloudService = require('./cloud.service')
 const cypher = require('./cypher')
+const uuid = require('uuid').v4
 
 class UserService {
 	async get(user) {
 		return UserRepository.find({ ...user, active: true })
 	}
 
+	async login(user) {
+		const userExists = await UserRepository.findOne({
+			$or: [{ email: user.login }, { username: user.login }],
+		})
+			.select('+password')
+			.exec()
+		if (!userExists) throw { code: 401, message: 'Invalid credentials' }
+
+		const correctPassword = await cypher.bCompare(
+			user.password,
+			userExists.password
+		)
+
+		if (!correctPassword) throw { code: 401, message: 'Invalid credentials' }
+		const sessionId = uuid()
+		userExists.sessionId = sessionId
+		userExists.save()
+		return UserRepository.findOne({_id: userExists._id}).lean().exec()
+		// return { ...userExists, __v: undefined, password: undefined }
+	}
+
 	async create(user) {
 		const keys = await keyPairGenerator()
+		user.password = await cypher.bCrypt(user.password)
 		await UserRepository.create({ ...user, ...keys })
 		return this.get(user)
 	}
@@ -30,7 +53,9 @@ class UserService {
 		const userPK = await UserRepository.findOneAndUpdate(
 			{ _id: user.id },
 			{ $set: user }
-		).select('+privateKey').exec()
+		)
+			.select('+privateKey')
+			.exec()
 
 		const credentials = cypher.decryptCredentials(userPK, user)
 		const [a, b] = await CloudService.getAll(credentials)

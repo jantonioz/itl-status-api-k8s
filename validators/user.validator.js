@@ -19,6 +19,15 @@ class UserValidator {
 			.options({ allowUnknown: true, stripUnknown: true })
 	}
 
+	login() {
+		return Joi.object()
+			.keys({
+				login: Joi.string().required(),
+				password: Joi.string().required(),
+			})
+			.options({ allowUnknown: true, stripUnknown: true })
+	}
+
 	update() {
 		return Joi.object()
 			.keys({
@@ -27,6 +36,7 @@ class UserValidator {
 				username: Joi.string().required(),
 				controlNum: Joi.string().optional(),
 				controlPwd: Joi.string().optional(),
+				sessionId: Joi.string().required(),
 				...id,
 			})
 			.options({ allowUnknown: true, stripUnknown: true })
@@ -34,7 +44,7 @@ class UserValidator {
 
 	getStatus() {
 		return Joi.object()
-			.keys(id)
+			.keys({ ...id, sessionId: Joi.string().required() })
 			.options({ allowUnknown: true, stripUnknown: true })
 	}
 
@@ -43,6 +53,7 @@ class UserValidator {
 			.keys({
 				controlNum: Joi.string().required(),
 				controlPwd: Joi.string().required(),
+				sessionId: Joi.string().required(),
 				...id,
 			})
 			.options({ allowUnknown: true, stripUnknown: true })
@@ -50,7 +61,7 @@ class UserValidator {
 
 	delete() {
 		return Joi.object()
-			.keys(id)
+			.keys({ ...id, sessionId: Joi.string().required() })
 			.options({ allowUnknown: true, stripUnknown: true })
 	}
 }

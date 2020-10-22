@@ -1,5 +1,6 @@
 const crypto = require('crypto')
 const NodeRSA = require('node-rsa')
+const _bcrypt = require('bcryptjs')
 
 function keyPairGenerator() {
 	return new Promise((resolve, reject) => {
@@ -40,9 +41,20 @@ function decryptCredentials(user, cred) {
 	}
 }
 
+async function bCrypt(data) {
+	const salt = await _bcrypt.genSalt(10)
+	return _bcrypt.hash(data, salt)
+}
+
+function bCompare(data, crypt) {
+	return _bcrypt.compare(data, crypt)
+}
+
 module.exports = {
 	keyPairGenerator,
 	encrypt,
 	decrypt,
 	decryptCredentials: decryptCredentials,
+	bCrypt,
+	bCompare
 }

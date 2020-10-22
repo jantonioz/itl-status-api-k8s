@@ -1,43 +1,45 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: server
   labels:
-    app: api-itl-status
+    app: server
 spec:
-  replicas: 2
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
+  replicas: 3
+  selector:
+    matchLabels:
+      app: server
   template:
     metadata:
       labels:
-        name: server
+        app: server
     spec:
       containers:
-        - name: server
-          image: grc.io/api-itl-status/server:1.0
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 4000
-          env:
-            - name: DATABASE_HOST
-              value: 34.72.149.88
-            - name: DATABASE_USER
-              value: root
-            - name: DATABASE_PWD
-              value: zAomdInV51ikg2LU5SYlvKBGb
-            - name: DATABASE_PORT
-              value: 27017
-            - name: DATABASE_NAME
-              value: itlstatus
-            - name: CLOUD_FUNCTION_CARGA_URL
-              value: https://us-central1-api-itl-status.cloudfunctions.net/fetchAlumnoCarga
-            - name: CLOUD_FUNCTION_KARDEX_URL
-              value: https://us-central1-api-itl-status.cloudfunctions.net/fetchAlumnoKardex
-            - name: API_KEY_NAME
-              value: X-API
-            - name: API_KEY_VALUE
-              value: LP!Q(tHFBA]zl)vml+.T{!8.RA)s{OVg{CAB
+      - name: server
+        image: gcr.io/api-itl-status/server:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4000
+        env:
+        - name: DATABASE_HOST
+          value: 34.72.149.88
+        - name: DATABASE_USER
+          value: root
+        - name: DATABASE_PWD
+          value: zAomdInV51ikg2LU5SYlvKBGb
+        - name: DATABASE_PORT
+          value: "27017"
+        - name: DATABASE_NAME
+          value: itlstatus
+        - name: CLOUD_FUNCTION_CARGA_URL
+          value: https://us-central1-api-itl-status.cloudfunctions.net/fetchAlumnoCarga
+        - name: CLOUD_FUNCTION_KARDEX_URL
+          value: https://us-central1-api-itl-status.cloudfunctions.net/fetchAlumnoKardex
+        - name: API_KEY_NAME
+          value: X-API
+        - name: API_KEY_VALUE
+          value: LP!Q(tHFBA]zl)vml+.T{!8.RA)s{OVg{CAB
+        - name: NODE_ENV
+          value: production
+        - name: xd 
+          value: xd

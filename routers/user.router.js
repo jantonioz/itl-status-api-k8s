@@ -3,7 +3,10 @@ const router = require('express').Router()
 const UserController = require('../controllers/user.controller')
 const UserMiddleware = require('../middlewares/user.middleware')
 
-router.get('/users', UserMiddleware.get, UserController.get)
+
+router.post('/login', UserMiddleware.login, UserController.login)
+
+// router.get('/users', UserMiddleware.get, UserController.get)
 router.get('/users/status', UserMiddleware.getStatus, UserController.getStatus)
 router.post('/users', UserMiddleware.create, UserController.create)
 router.put('/users', UserMiddleware.update, UserController.update)

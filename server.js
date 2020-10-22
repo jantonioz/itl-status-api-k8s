@@ -3,6 +3,7 @@ const app = require('express')()
 const bodyParser = require('body-parser')
 const db = require('./database')
 const config = require('./config').server
+const configDb = require('./config').database
 
 // CORS
 app.use((req, res, next) => {
@@ -39,13 +40,14 @@ async function startServer() {
   try {
     console.log('NODE ENV', process.env.NODE_ENV)
     const port = process.env.HTTP_PORT || 4000
-    const connection = await db()
+    await db()
 
     app.listen(port, () => {
       console.log(new Date().toISOString(), `Running API ON ${API_URL}:${port}`)
     })
   } catch (error) {
     console.log(new Date(), error)
+    // console.log(new Date(), configDb)
   }
 }
 

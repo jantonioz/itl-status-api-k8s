@@ -9,6 +9,15 @@ class UserController {
 			next(error)
 		}
 	}
+	
+	async login(req, res, next) {
+		try {
+			const data = await UserService.login(req.user)
+			res.status(200).json({ ok: true, data })
+		} catch (error) {
+			next(error)
+		}
+	}
 
 	async getStatus(req, res, next) {
 		try {

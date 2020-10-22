@@ -40,6 +40,19 @@ class UserMiddleware {
 		}
 	}
 
+	async login(req, res, next) {
+		try {
+			req.user = await UserValidator.login().validateAsync({
+				...req.query,
+				...req.params,
+				...req.body,
+			})
+			next()
+		} catch (error) {
+			next(error)
+		}
+	}
+
 	async update(req, res, next) {
 		try {
 			req.user = await UserValidator.update().validateAsync({
