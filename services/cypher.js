@@ -4,22 +4,11 @@ const _bcrypt = require('bcryptjs')
 
 function keyPairGenerator() {
 	return new Promise((resolve, reject) => {
-		crypto.generateKeyPair(
-			'rsa',
-			{
-				modulusLength: 2048,
-			},
-			(err, publicKey, privateKey) => {
-				privateKey = privateKey
-					.export({ type: 'pkcs1', format: 'pem' })
-					.toString()
-				publicKey = publicKey
-					.export({ type: 'pkcs1', format: 'pem' })
-					.toString()
-				if (!err) resolve({ publicKey, privateKey })
-				else reject(err)
-			}
-		)
+		const key = new NodeRSA()
+		key.generateKeyPair()
+		const publicKey = key.exportKey('pkcs1-public-pem')
+		const privateKey = key.exportKey('pkcs1-private-pem')
+		resolve({ publicKey, privateKey })
 	})
 }
 
@@ -56,5 +45,5 @@ module.exports = {
 	decrypt,
 	decryptCredentials: decryptCredentials,
 	bCrypt,
-	bCompare
+	bCompare,
 }
