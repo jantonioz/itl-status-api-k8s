@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "itlk8sazure-ad87"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "itlk8sazure-ad87"
+  template:
+    metadata:
+      labels:
+        app: "itlk8sazure-ad87"
+    spec:
+      containers:
+        - name: "itlk8sazure-ad87"
+          image: "acritlk8s.azurecr.io/itlk8sazure"
+          ports:
+          - containerPort: 4000
