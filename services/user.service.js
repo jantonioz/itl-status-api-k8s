@@ -27,15 +27,15 @@ class UserService {
 		const sessionId = uuid()
 		userExists.sessionId = sessionId
 		userExists.save()
-		return UserRepository.findOne({_id: userExists._id}).lean().exec()
+		return UserRepository.findOne({ _id: userExists._id }).lean().exec()
 		// return { ...userExists, __v: undefined, password: undefined }
 	}
 
 	async create(user) {
 		const keys = await keyPairGenerator()
 		user.password = await cypher.bCrypt(user.password)
-		await UserRepository.create({ ...user, ...keys })
-		return this.get(user)
+		const { _id } = await UserRepository.create({ ...user, ...keys })
+		return UserRepository.findOne({ _id: _id })
 	}
 
 	async update(user) {
