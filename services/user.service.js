@@ -39,6 +39,13 @@ class UserService {
 	}
 
 	async update(user) {
+		const userExists = await UserRepository.findOne({
+			$or: [{ _id: user.id }, { sessionId: user.sessionId }],
+		})
+			.select('+password')
+			.exec()
+		if (!userExists) throw { code: 401, message: 'Invalid credentials' }
+		
 		await UserRepository.updateOne({ _id: user.id }, { $set: user })
 		return UserRepository.findOne({ _id: user.id })
 	}

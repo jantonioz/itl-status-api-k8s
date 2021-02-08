@@ -32,7 +32,7 @@ class UserValidator {
 		return Joi.object()
 			.keys({
 				email: Joi.string().required(),
-				password: Joi.string().required(),
+				password: Joi.string().optional(),
 				username: Joi.string().required(),
 				controlNum: Joi.string().optional(),
 				controlPwd: Joi.string().optional(),
