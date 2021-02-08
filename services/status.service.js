@@ -20,25 +20,25 @@ class KardexService {
 	async updateSubjects(list) {
 		const existingSubjects = await SubjectRepository.find()
 		const existingSubjectsClaves = existingSubjects.map(
-			(subject) => subject.clave
+			(subject) => subject['key']
 		)
 
 		const toCreateSubjects = list.filter(
-			(item) => !existingSubjectsClaves.includes(item['Clave'])
+			(item) => !existingSubjectsClaves.includes(item['key'])
 		)
 
 		// Create missing data
 		const createdSubjects = await SubjectRepository.insertMany(
 			toCreateSubjects.map((item) => ({
-				clave: item['Clave'],
-				name: this.camelize(item['Materia']),
+				key: item['key'],
+				name: this.camelize(item['subject']),
 				career: '',
 			}))
 		)
 		return [...existingSubjects, ...createdSubjects].reduce(
 			(acc, el) => ({
 				...acc,
-				[el.clave]: el.id,
+				[el.key]: el.id,
 			}),
 			{}
 		)
@@ -54,15 +54,17 @@ class KardexService {
 		)
 
 		const toCreateKardexItems = list.filter(
-			(item) => !existingKardexItemsClaves.includes(item['Clave'])
+			(item) => !existingKardexItemsClaves.includes(item['key'])
 		)
 
 		const indexedSubjects = await this.updateSubjects(list)
 
 		const createdKardexItems = await KardexRepository.insertMany(
 			toCreateKardexItems.map((item) => ({
-				subject: indexedSubjects[item['Clave']],
-				grade: item['Calificación'],
+				subject: indexedSubjects[item['key']],
+				grade: item['grade'],
+				date: item['date'],
+				semester: item['semester'],
 				user: user.id,
 			}))
 		)
@@ -77,18 +79,17 @@ class KardexService {
 		const existingGroupsClaves = existingGroups.map(
 			(group) => group.subject.clave + group.group
 		)
-		''.substr(-1)
 
 		const indexedSubjects = await this.updateSubjects(
-			list.map((item) => ({ ...item, Clave: item['Grupo'].substr(0, 3) }))
+			list.map((item) => ({ ...item, Clave: item['group'].substr(0, 3) }))
 		)
 		const toCreateGroups = list.filter(
-			(item) => !existingGroupsClaves.includes(item['Grupo'])
+			(item) => !existingGroupsClaves.includes(item['group'])
 		)
 
 		const toUpdateGroups = existingGroups
 			.filter((group) =>
-				list.map((e) => e['Grupo'].substr(0, 3)).includes(group.subject.clave)
+				list.map((e) => e['group'].substr(0, 3)).includes(group.subject.clave)
 			)
 			.map((group) =>
 				GroupRepository.updateOne(
@@ -112,9 +113,9 @@ class KardexService {
 
 	transformGroup(item, subjects, user) {
 		return {
-			group: item['Grupo'].substr(-1),
-			subject: subjects[item['Grupo'].substr(0, 3)],
-			professor: this.camelize(item['Profesor']),
+			group: item['group'].substr(-1),
+			subject: subjects[item['group'].substr(0, 3)],
+			professor: this.camelize(item['professor']),
 			students: user.id,
 			schedule: this.transformSchedule(item),
 		}
