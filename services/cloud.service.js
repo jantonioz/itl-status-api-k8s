@@ -4,12 +4,12 @@ const urls = require('../config').cloud
 
 class CloudService {
 	async getKardex({ control, password }) {
-		const { data } = await axios.post(urls.kardexUrl, { control, password })
+		const { data } = await axios.post(urls.kardexUrl, { noControl: control, password })
 		return data
 	}
 
 	async getCarga({ control, password }) {
-		const { data } = await axios.post(urls.cargaUrl, { control, password })
+		const { data } = await axios.post(urls.cargaUrl, { noControl: control, password })
 		return data
 	}
 
