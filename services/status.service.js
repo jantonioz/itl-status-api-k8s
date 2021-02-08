@@ -13,7 +13,7 @@ class KardexService {
 	async getKardex(user) {
 		return KardexRepository.find({ user: user.id })
 			.populate('subject', 'name clave _id')
-			.select('_id grade user')
+			.select('_id grade user semester date')
 			.exec()
 	}
 

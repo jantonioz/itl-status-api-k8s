@@ -41,8 +41,7 @@ class UserService {
 	async update(user) {
 		const userExists = await UserRepository.findOne({
 			$or: [{ _id: user.id }, { sessionId: user.sessionId }],
-		})
-			.exec()
+		}).exec()
 		if (!userExists) throw { code: 401, message: 'Invalid credentials' }
 
 		await UserRepository.updateOne({ _id: user.id }, { $set: user })
@@ -51,6 +50,10 @@ class UserService {
 	}
 
 	async getStatus(user) {
+		const userExists = await UserRepository.findOne({
+			$or: [{ _id: user.id }, { sessionId: user.sessionId }],
+		}).exec()
+		if (!userExists) throw { code: 401, message: 'Invalid credentials' }
 		const kardex = await StatusService.getKardex(user)
 		const carga = await StatusService.getCarga(user)
 		return { kardex, carga }
