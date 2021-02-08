@@ -51,8 +51,8 @@ class UserValidator {
 	updateStatus() {
 		return Joi.object()
 			.keys({
-				controlNum: Joi.string().required(),
-				controlPwd: Joi.string().required(),
+				controlNum: Joi.string().optional(),
+				controlPwd: Joi.string().optional(),
 				sessionId: Joi.string().required(),
 				...id,
 			})
