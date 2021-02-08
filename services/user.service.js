@@ -42,11 +42,11 @@ class UserService {
 		const userExists = await UserRepository.findOne({
 			$or: [{ _id: user.id }, { sessionId: user.sessionId }],
 		})
-			.select('+password')
 			.exec()
 		if (!userExists) throw { code: 401, message: 'Invalid credentials' }
-		
+
 		await UserRepository.updateOne({ _id: user.id }, { $set: user })
+		await this.updateStatus(user)
 		return UserRepository.findOne({ _id: user.id })
 	}
 
@@ -57,14 +57,14 @@ class UserService {
 	}
 
 	async updateStatus(user) {
-		const userPK = await UserRepository.findOneAndUpdate(
-			{ _id: user.id },
-			{ $set: user }
-		)
-			.select('+privateKey')
+		const userExists = await UserRepository.findOne({
+			$or: [{ _id: user.id }, { sessionId: user.sessionId }],
+		})
+			.select('+controlNum +controlPwd +privateKey')
 			.exec()
+		if (!userExists) throw { code: 401, message: 'Invalid credentials' }
 
-		const credentials = cypher.decryptCredentials(userPK, user)
+		const credentials = cypher.decryptCredentials(userExists)
 		const [a, b] = await CloudService.getAll(credentials)
 
 		const kardex = await StatusService.createKardexFromList(a.kardex, user)
