@@ -50,7 +50,7 @@ class KardexService {
 			.populate('subject')
 			.exec()
 		const existingKardexItemsClaves = existingKardexItems.map(
-			(item) => item.subject.clave
+			(item) => item.subject.key
 		)
 
 		const toCreateKardexItems = list.filter(
@@ -81,7 +81,7 @@ class KardexService {
 		)
 
 		const indexedSubjects = await this.updateSubjects(
-			list.map((item) => ({ ...item, Clave: item['group'].substr(0, 3) }))
+			list.map((item) => ({ ...item, key: item['group'].substr(0, 3) }))
 		)
 		const toCreateGroups = list.filter(
 			(item) => !existingGroupsClaves.includes(item['group'])
@@ -123,12 +123,11 @@ class KardexService {
 
 	transformSchedule(item) {
 		return {
-			1: this.transformScheduleItem(item['Lunes']),
-			2: this.transformScheduleItem(item['Martes']),
-			3: this.transformScheduleItem(item['Miercoles']),
-			4: this.transformScheduleItem(item['Jueves']),
-			5: this.transformScheduleItem(item['Viernes']),
-			6: this.transformScheduleItem(item['Sabado']),
+			1: this.transformScheduleItem(item['monday']),
+			2: this.transformScheduleItem(item['tuesday']),
+			3: this.transformScheduleItem(item['wednesday']),
+			4: this.transformScheduleItem(item['thursday']),
+			5: this.transformScheduleItem(item['friday']),
 		}
 	}
 
