@@ -5,7 +5,7 @@ const GroupRepository = require('../repositories/group.repository')
 class KardexService {
 	async getCarga(user) {
 		return GroupRepository.find({ students: user.id })
-			.populate('subject', 'name clave _id')
+			.populate('subject', 'name key _id')
 			.select('_id students group professor schedule')
 			.exec()
 	}
