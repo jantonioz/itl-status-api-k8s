@@ -34,7 +34,8 @@ class UserService {
 	async create(user) {
 		const keys = await keyPairGenerator()
 		user.password = await cypher.bCrypt(user.password)
-		const { _id } = await UserRepository.create({ ...user, ...keys })
+		const sessionId = uuid()
+		const { _id } = await UserRepository.create({ ...user, ...keys, sessionId })
 		return UserRepository.findOne({ _id: _id })
 	}
 
