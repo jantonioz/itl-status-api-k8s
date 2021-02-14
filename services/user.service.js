@@ -26,6 +26,7 @@ class UserService {
 		if (!correctPassword) throw { code: 401, message: 'Invalid credentials' }
 		const sessionId = uuid()
 		userExists.sessionId = sessionId
+		userExists.lastLogin = new Date().toISOString()
 		userExists.save()
 		return UserRepository.findOne({ _id: userExists._id }).lean().exec()
 		// return { ...userExists, __v: undefined, password: undefined }
