@@ -19,6 +19,7 @@ const UserSchema = new Schema({
 	privateKey: { type: String, select: false },
 	controlPwd: { type: String, default: null, select: false },
 	active: { type: Boolean, default: true, select: false },
+	lastLogin: { type: Date, default: new Date().toISOString() },
 })
 
 const User = mongoose.model('User', UserSchema)
