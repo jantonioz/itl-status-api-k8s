@@ -39,8 +39,8 @@ const API_URL = '/api'
 const loginLimit = rateLimit({ windowMs: 15 * 6e4, max: 10 })
 const registerLimit = rateLimit({ windowMs: 1 * 3.6e6, max: 5 })
 
-app.use(`${API_URL}/register`, registerLimit)
-app.use(`${API_URL}/login`, registerLimit, loginLimit)
+/* app.use(`${API_URL}/register`, registerLimit)
+app.use(`${API_URL}/login`, registerLimit, loginLimit) */
 
 app.use(API_URL, require('./routers'))
 
