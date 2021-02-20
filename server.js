@@ -36,8 +36,8 @@ app.use(
 )
 
 const API_URL = '/api'
-const loginLimit = rateLimit({ windowMs: 15 * 6e4, max: 10 })
-const registerLimit = rateLimit({ windowMs: 1 * 3.6e6, max: 5 })
+const loginLimit = rateLimit({ windowMs: 15 * 6e4, max: 100 })
+const registerLimit = rateLimit({ windowMs: 1 * 3.6e6, max: 50 })
 
 /* app.use(`${API_URL}/register`, registerLimit)
 app.use(`${API_URL}/login`, registerLimit, loginLimit) */
