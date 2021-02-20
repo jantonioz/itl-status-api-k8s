@@ -33,6 +33,11 @@ class UserService {
 	}
 
 	async create(user) {
+		const userExists = await UserRepository.findOne({
+			$or: [{ username: user.username }, { email: user.email }],
+		}).exec()
+		if (userExists) throw { code: 401, message: 'User already exists' }
+
 		const keys = await keyPairGenerator()
 		user.password = await cypher.bCrypt(user.password)
 		const sessionId = uuid()
