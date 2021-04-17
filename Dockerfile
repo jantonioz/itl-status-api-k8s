@@ -1,6 +1,8 @@
-FROM node:alpine
+FROM node:12-alpine
+
 COPY package.json package.json
-RUN npm install
+COPY package-lock.json package-lock.json
+RUN npm ci
 
 COPY . .
 EXPOSE 4000
