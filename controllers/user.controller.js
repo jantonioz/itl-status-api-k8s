@@ -43,6 +43,7 @@ class UserController {
 			const data = await UserService.update(req.user)
 			res.status(200).json({ ok: true, data })
 		} catch (error) {
+			console.log(error)
 			next(error)
 		}
 	}
