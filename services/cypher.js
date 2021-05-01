@@ -22,12 +22,19 @@ async function decrypt(data, privateKeyStr) {
 	return key.decrypt(data, 'utf-8')
 }
 
-function decryptCredentials(user) {
+async function decryptCredentials(user) {
 	const key = new NodeRSA(user.privateKey)
-	return {
-		control: key.decrypt(user.controlNum, 'utf-8'),
-		password: key.decrypt(user.controlPwd, 'utf-8'),
-	}
+
+	return new Promise((resolve, reject) => {
+		try {
+
+			const control = key.decrypt(user.controlNum, 'utf-8')
+			const password = key.decrypt(user.controlPwd, 'utf-8')
+			resolve({ control, password })
+		} catch (e) {
+			reject(e)
+		}
+	})
 }
 
 async function bCrypt(data) {

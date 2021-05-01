@@ -77,7 +77,7 @@ class KardexService {
 			.populate('subject')
 			.exec()
 		const existingGroupsClaves = existingGroups.map(
-			(group) => group.subject.clave + group.group
+			(group) => group.subject.key + group.group
 		)
 
 		const indexedSubjects = await this.updateSubjects(
@@ -87,9 +87,8 @@ class KardexService {
 			(item) => !existingGroupsClaves.includes(item['group'])
 		)
 
-		const toUpdateGroups = existingGroups
-			.filter((group) =>
-				list.map((e) => e['group'].substr(0, 3)).includes(group.subject.clave)
+		const toUpdateGroups = existingGroups.filter((group) =>
+				list.map((e) => e['group'].substr(0, 3)).includes(group.subject.key)
 			)
 			.map((group) =>
 				GroupRepository.updateOne(

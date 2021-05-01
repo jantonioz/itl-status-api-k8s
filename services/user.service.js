@@ -12,6 +12,7 @@ class UserService {
 
 	async login(user) {
 		const userExists = await UserRepository.findOne({
+			active: true,
 			$or: [{ email: user.login }, { username: user.login }],
 		})
 			.select('+password')
@@ -27,7 +28,8 @@ class UserService {
 		const sessionId = uuid()
 		userExists.sessionId = sessionId
 		userExists.lastLogin = new Date().toISOString()
-		userExists.save()
+
+		await userExists.save()
 		return UserRepository.findOne({ _id: userExists._id }).lean().exec()
 		// return { ...userExists, __v: undefined, password: undefined }
 	}
@@ -58,27 +60,27 @@ class UserService {
 
 	async getStatus(user) {
 		const userExists = await UserRepository.findOne({
-			$or: [{ _id: user.id }, { sessionId: user.sessionId }],
+			/* $or: [{ _id: user.id }, { */ sessionId: user.sessionId /* }], */
 		}).exec()
 		if (!userExists) throw { code: 401, message: 'Invalid credentials' }
-		const kardex = await StatusService.getKardex(user)
-		const carga = await StatusService.getCarga(user)
+		const kardex = await StatusService.getKardex(userExists)
+		const carga = await StatusService.getCarga(userExists)
 		return { kardex, carga }
 	}
 
 	async updateStatus(user) {
 		const userExists = await UserRepository.findOne({
-			$or: [{ _id: user.id }, { sessionId: user.sessionId }],
+			/* $or: [{ _id: user.id }, { */ sessionId: user.sessionId /* }], */
 		})
 			.select('+controlNum +controlPwd +privateKey')
 			.exec()
 		if (!userExists) throw { code: 401, message: 'Invalid credentials' }
 
-		const credentials = cypher.decryptCredentials(userExists)
+		const credentials = await cypher.decryptCredentials(userExists)
 		const [a, b] = await CloudService.getAll(credentials)
 
-		const kardex = await StatusService.createKardexFromList(a.kardex, user)
-		const carga = await StatusService.createCargaFromList(b.carga, user)
+		const kardex = await StatusService.createKardexFromList(a.kardex, { ...user, id: userExists._id })
+		const carga = await StatusService.createCargaFromList(b.carga, { ...user, id: userExists._id })
 		return { kardex, carga }
 	}
 

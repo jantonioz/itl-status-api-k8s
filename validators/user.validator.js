@@ -44,7 +44,7 @@ class UserValidator {
 
 	getStatus() {
 		return Joi.object()
-			.keys({ ...id, sessionId: Joi.string().required() })
+			.keys({ /* ...id, */ sessionId: Joi.string().required() })
 			.options({ allowUnknown: true, stripUnknown: true })
 	}
 
@@ -54,7 +54,7 @@ class UserValidator {
 				controlNum: Joi.string().optional(),
 				controlPwd: Joi.string().optional(),
 				sessionId: Joi.string().required(),
-				...id,
+				/* ...id, */
 			})
 			.options({ allowUnknown: true, stripUnknown: true })
 	}
