@@ -30,11 +30,16 @@ async function decryptCredentials(user) {
 
 			const control = key.decrypt(user.controlNum, 'utf-8')
 			const password = key.decrypt(user.controlPwd, 'utf-8')
-			resolve({ control, password })
+			resolve({ control: getStringFromBuffer(control), password: getStringFromBuffer(password) })
 		} catch (e) {
 			reject(e)
 		}
 	})
+}
+
+function getStringFromBuffer(value) {
+	if (typeof value !== 'string') return value.toString()
+	return value
 }
 
 async function bCrypt(data) {
